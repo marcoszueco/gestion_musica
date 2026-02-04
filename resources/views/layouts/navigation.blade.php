@@ -15,6 +15,15 @@
                     <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')">
                         {{ __('Inicio') }}
                     </x-nav-link>
+                    <x-nav-link :href="route('album.index')" :active="request()->routeIs('album.index')">
+                        {{ __('Mis Álbumes') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                        {{ __('Editar Perfil') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('profile.show')" :active="request()->routeIs('profile.show')">
+                        {{ __('Ver Perfil') }}
+                    </x-nav-link>
                 </div>
             </div>
 
@@ -98,6 +107,4 @@
         </div>
     </div>
 </nav>
-<x-nav-link :href="route('album.index')" :active="request()->routeIs('album.index')">
-    {{ __('Mis Álbumes') }}
-</x-nav-link>
+

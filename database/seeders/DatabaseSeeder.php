@@ -24,5 +24,11 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AlbumSeeder::class,
         ]);
+
+        // Llamamos al seeder que acabamos de crear
+        $this->call([
+            UserSeeder::class,
+        ]);
+
     }
 }

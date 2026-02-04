@@ -18,6 +18,16 @@ class ProfileController extends Controller
     {
         return view('profile.edit', [
             'user' => $request->user(),
+            // Tarea 5: Cargamos los álbumes del usuario usando la relación que creamos
+            'albums' => $request->user()->albums,
+        ]);
+    }
+    public function show(Request $request): View
+    {
+        return view('profile.show', [
+            'user' => $request->user(),
+            // Cargamos los álbumes usando la relación hasMany que definimos en el modelo User
+            'albums' => $request->user()->albums()->latest()->get(),
         ]);
     }
 

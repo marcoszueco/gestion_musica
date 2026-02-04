@@ -96,6 +96,27 @@
             @endif
         </div>
     </div>
+    <div class="p-4 sm:p-8 bg-white dark:bg-gray-800 shadow sm:rounded-lg mt-6">
+        <header>
+            <h2 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                {{ __('Mi Colección Musical') }}
+            </h2>
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">
+                Aquí puedes ver todos los álbumes que has registrado.
+            </p>
+        </header>
+
+        <div class="mt-6 grid grid-cols-1 md:grid-cols-3 gap-4">
+            @forelse ($albums as $album)
+                <div class="p-4 bg-gray-100 dark:bg-gray-700 rounded-lg shadow">
+                    <p class="font-bold text-indigo-500">{{ $album->title }}</p>
+                    <p class="text-sm text-gray-500">{{ $album->artist }}</p>
+                </div>
+            @empty
+                <p class="text-gray-500 italic">Aún no has añadido ningún álbum.</p>
+            @endforelse
+        </div>
+    </div>
 </div>
 
 </body>
