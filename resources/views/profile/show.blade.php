@@ -40,7 +40,7 @@
                             {{ $albums->count() }} Álbumes
                         </span>
                     @else
-                        <span class="bg-indigo-800 text-green-600-600 text-xs font-bold px-3 py-1 rounded-full">
+                        <span class="bg-indigo-800 text-green-600 text-xs font-bold px-3 py-1 rounded-full">
                             {{ $albums->count() }} Álbumes
                         </span>
                     @endif
@@ -61,7 +61,7 @@
                                 <p class="text-indigo-400 text-sm">{{ $album->artist }}</p>
                                 <div class="mt-3 flex justify-between items-center text-xs text-gray-500">
                                     <span>{{ $album->genre }}</span>
-                                    <span>{{ $album->year }}</span>
+                                    <span>{{ $album->release_year }}</span>
                                 </div>
                             </div>
                         @endforeach

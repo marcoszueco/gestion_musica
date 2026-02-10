@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Album;
-use Illuminate\Http\Request;
 use App\Http\Requests\StoreRequest;
 use App\Http\Requests\UpdateRequest;
 
@@ -35,6 +34,7 @@ class AlbumController extends Controller
     {
         // Si llega aquí, los datos ya son válidos
         $validated = $request->validated();
+        $validated['user_id'] = auth()->id();
         Album::create($validated);
 
         return redirect()->route('album.index')->with('success', 'Álbum creado con éxito.');

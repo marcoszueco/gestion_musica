@@ -13,19 +13,17 @@ return new class extends Migration
     {
         Schema::create('ratings', function (Blueprint $table) {
             $table->id();
-            // Clave foránea al usuario que califica
+            // Relaciones con claves foráneas
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('album_id')->constrained()->onDelete('cascade');
 
-            // Clave foránea al contenido (en este caso, 'albums')
-            $table->foreignId('album_id')->constrained('albums')->onDelete('cascade');
-
-            // Campo para la puntuación (ej: 1 a 5 (Tiny))
-            $table->unsignedTinyInteger('score');
-
-            //Restringe a una única valoración
-            $table->unique(['user_id', 'album_id']);
+            // Tarea 5: El score como entero pequeño
+            $table->unsignedTinyInteger('score'); // Guardará valores de 1 a 5
 
             $table->timestamps();
+
+            // Evitar que un usuario vote dos veces el mismo álbum
+            $table->unique(['user_id', 'album_id']);
         });
     }
 

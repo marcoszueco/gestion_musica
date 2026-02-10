@@ -72,6 +72,39 @@
                 @endauth
             </div>
         </div>
+        <div class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
+            <h4 class="mb-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">Tu Valoración</h4>
+
+            <form action="{{ route('album.show') }}" method="POST" class="flex flex-row-reverse justify-center">
+                @csrf
+                <input type="hidden" name="album_id" value="{{ $album->id }}">
+
+                @php $userRating = $album->ratings->where('user_id', auth()->id())->first()?->score; @endphp
+
+                {{-- Iteramos de 5 a 1 para que el row-reverse funcione correctamente --}}
+                @for ($i = 5; $i >= 1; $i--)
+                    <input type="radio" id="star{{ $i }}" name="score" value="{{ $i }}"
+                           class="peer hidden"
+                           onchange="this.form.submit()"
+                        {{ $userRating == $i ? 'checked' : '' }}>
+
+                    <label for="star{{ $i }}"
+                           class="cursor-pointer text-3xl text-gray-300 transition-colors duration-200
+                          peer-checked:text-yellow-400
+                          peer-hover:text-yellow-400
+                          hover:text-yellow-500
+                          peer-hover:peer-checked:text-yellow-500">
+                        <i class="bi bi-star-fill px-1"></i>
+                    </label>
+                @endfor
+            </form>
+
+            @if($userRating)
+                <p class="mt-2 text-xs text-yellow-600 font-medium italic">
+                    Has puntuado este álbum con {{ $userRating }} estrellas
+                </p>
+            @endif
+        </div>
     </div>
 
     <hr class="my-5">

@@ -14,9 +14,11 @@
 
         {{-- 6. Enlace "Crear nuevo" (solo si está autenticado) --}}
         @auth
-            <a href="{{ route('album.create') }}" class="btn btn-primary shadow-sm">
-                + Crear Nuevo
-            </a>
+            @if(auth()->user()->is_admin)
+                <a href="{{ route('album.create') }}" class="btn btn-primary shadow-sm">
+                    + Crear Nuevo
+                </a>
+            @endif
         @endauth
     </div>
 
