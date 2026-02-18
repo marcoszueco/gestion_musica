@@ -13,4 +13,20 @@ class Review extends Model
         'title',
         'content',
     ];
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+// Relación con el álbum reseñado
+    public function album()
+    {
+        return $this->belongsTo(Album::class);
+    }
+    protected static function booted()
+    {
+        static::addGlobalScope('ancient', function ($builder) {
+            $builder->latest(); // Esto aplica un orderBy('created_at', 'desc') automáticamente
+        });
+    }
 }
