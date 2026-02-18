@@ -1,0 +1,2 @@
+<img src="<?php echo e(asset('img/avellana.png')); ?>" <?php echo e($attributes); ?> alt="Logo">
+<?php /**PATH /var/www/html/gestion_musica/resources/views/components/application-logo.blade.php ENDPATH**/ ?>

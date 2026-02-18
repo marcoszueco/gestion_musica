@@ -19,6 +19,6 @@ class IsAdmin
         }
 
         // Tarea 5: Redirección apropiada si no es admin
-        return redirect('/dashboard')->with('error', 'No tienes permisos de administrador.');
+        return redirect('/album')->with('error', 'No tienes permisos de administrador.');
     }
 }

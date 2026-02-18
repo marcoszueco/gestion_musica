@@ -23,6 +23,9 @@
                         </span>
                     </div>
                 </div>
+                <x-nav-link class="font-semibold" :href="route('profile.edit')" :active="request()->routeIs('profile.edit')">
+                    {{ __('Editar Perfil') }}
+                </x-nav-link>
             </div>
 
             <div class="p-4 sm:p-8 bg-lime-600 dark:bg-blue-600 shadow sm:rounded-lg">

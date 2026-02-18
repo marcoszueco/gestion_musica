@@ -8,7 +8,6 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 </head>
 <body class="bg-light">
-
 <div class="container py-5">
     <a href="{{ route('album.index') }}" class="btn btn-link text-decoration-none mb-4">
         <i class="bi bi-arrow-left"></i> Volver al listado
@@ -54,54 +53,44 @@
 
                 {{-- 5. Mostrar botones editar/eliminar (solo creador o admin) --}}
                 @auth
-                    @if(Auth::id() === $album->user_id)
+                    @if(auth()->user()->isAdmin())
                         <div class="d-flex gap-2 mb-5">
                             <a href="{{ route('album.edit', $album) }}" class="btn btn-outline-primary px-4">
                                 <i class="bi bi-pencil"></i> Editar Álbum
                             </a>
-
-                            <form action="{{ route('album.destroy', $album) }}" method="POST" onsubmit="return confirm('¿Estás seguro de eliminar este álbum?');">
-                                @csrf
-                                @method('DELETE')
-                                <button type="submit" class="btn btn-outline-danger">
-                                    <i class="bi bi-trash"></i> Eliminar
-                                </button>
-                            </form>
                         </div>
                     @endif
                 @endauth
             </div>
         </div>
-        <div class="flex flex-col items-center p-4 bg-gray-50 dark:bg-gray-700 rounded-xl">
-            <h4 class="mb-2 text-sm font-semibold text-gray-500 uppercase tracking-wider">Tu Valoración</h4>
-
-            <form action="{{ route('album.show') }}" method="POST" class="flex flex-row-reverse justify-center">
+        <div class="flex flex-col items-center p-4 bg-gray-50 rounded-xl border">
+            <h4 class="mb-2 text-sm font-semibold text-muted text-uppercase">Tu Valoración</h4>
+            {{-- Asegúrate de que este formulario esté bien formado --}}
+            <form action="{{ route('rating.store') }}" method="POST" id="rating-form" class="d-flex flex-row-reverse justify-content-center">
                 @csrf
+                {{-- Forzamos la impresión del ID para asegurarnos --}}
                 <input type="hidden" name="album_id" value="{{ $album->id }}">
 
-                @php $userRating = $album->ratings->where('user_id', auth()->id())->first()?->score; @endphp
+                @php
+                    // Buscamos el voto del usuario actual
+                    $userRating = $album->ratings->where('user_id', auth()->id())->first()?->score;
+                @endphp
 
-                {{-- Iteramos de 5 a 1 para que el row-reverse funcione correctamente --}}
                 @for ($i = 5; $i >= 1; $i--)
                     <input type="radio" id="star{{ $i }}" name="score" value="{{ $i }}"
-                           class="peer hidden"
+                           class="btn-check" {{-- Usamos clase de bootstrap para evitar conflictos --}}
                            onchange="this.form.submit()"
                         {{ $userRating == $i ? 'checked' : '' }}>
 
-                    <label for="star{{ $i }}"
-                           class="cursor-pointer text-3xl text-gray-300 transition-colors duration-200
-                          peer-checked:text-yellow-400
-                          peer-hover:text-yellow-400
-                          hover:text-yellow-500
-                          peer-hover:peer-checked:text-yellow-500">
-                        <i class="bi bi-star-fill px-1"></i>
+                    <label for="star{{ $i }}" class="cursor-pointer fs-2 px-1 text-secondary transition">
+                        <i class="bi {{ $userRating >= $i ? 'bi-star-fill text-warning' : 'bi-star' }}"></i>
                     </label>
                 @endfor
             </form>
 
             @if($userRating)
-                <p class="mt-2 text-xs text-yellow-600 font-medium italic">
-                    Has puntuado este álbum con {{ $userRating }} estrellas
+                <p class="mt-2 small text-warning fw-bold">
+                    Has puntuado con {{ $userRating }} estrellas
                 </p>
             @endif
         </div>
@@ -110,39 +99,53 @@
     <hr class="my-5">
 
     <div class="row">
-        {{-- 6. Sección de valoraciones --}}
-        <div class="col-md-6 mb-4">
-            <h4 class="fw-bold mb-4">Valoraciones</h4>
-            <div class="list-group list-group-flush bg-white rounded shadow-sm p-3">
-                <div class="list-group-item border-0">
-                    <div class="text-warning mb-1">
-                        <i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star-fill"></i><i class="bi bi-star"></i>
-                    </div>
-                    <p class="mb-0 small text-muted italic">"Una obra maestra del género."</p>
-                </div>
-            </div>
-        </div>
 
         {{-- 7. Sección de comentarios --}}
         <div class="col-md-6">
-            <h4 class="fw-bold mb-4">Comentarios</h4>
+            <h4 class="fw-bold mb-4">Reseñas de la Comunidad</h4>
             <div class="bg-white rounded shadow-sm p-4">
-                {{-- Formulario de comentario rápido --}}
+
+                {{-- Formulario para crear Reseña --}}
                 @auth
-                    <form class="mb-4">
-                        <textarea class="form-control mb-2" rows="2" placeholder="Escribe tu opinión..."></textarea>
-                        <button class="btn btn-sm btn-dark">Publicar comentario</button>
+                    <form action="{{ route('review.store') }}" method="POST" class="mb-4 border-bottom pb-4">
+                        @csrf
+                        <input type="hidden" name="album_id" value="{{ $album->id }}">
+
+                        <div class="mb-2">
+                            <input type="text" name="title" class="form-control form-control-sm mb-2" placeholder="Título de tu reseña" required>
+                            <textarea name="content" class="form-control mb-2" rows="3" placeholder="¿Qué te ha parecido este álbum?" required></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-sm btn-dark">Publicar reseña</button>
                     </form>
+                @else
+                    <p class="small text-muted text-center">Debes iniciar sesión para escribir una reseña.</p>
                 @endauth
 
-                <div class="d-flex mb-3">
-                    <div class="flex-shrink-0">
-                        <div class="bg-secondary text-white rounded-circle d-flex align-items-center justify-content-center" style="width: 40px; height: 40px;">U</div>
-                    </div>
-                    <div class="ms-3">
-                        <h6 class="mb-0 fw-bold">Usuario Melómano</h6>
-                        <p class="text-muted small">Este álbum cambió mi forma de ver la música.</p>
-                    </div>
+                {{-- Listado de Reseñas Reales --}}
+                <div class="reviews-list" style="max-height: 400px; overflow-y: auto;">
+                    {{-- Listado de Reseñas --}}
+                    @forelse($album->reviews as $review)
+                        <div class="mb-4 p-3 bg-light rounded">
+                            <h6>{{ $review->title }}</h6>
+                            <p class="small mb-1">{{ $review->content }}</p>
+                            <small class="text-muted">Por {{ $review->user->name }}</small>
+
+                            {{-- LÓGICA DE PERMISOS: El dueño de la reseña O el administrador --}}
+                            @auth
+                                @if(auth()->user()->isAdmin() || auth()->id() === $review->user_id)
+                                    <form action="{{ route('review.destroy', $review) }}" method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-sm text-danger">
+                                            <i class="bi bi-trash"></i> Eliminar
+                                        </button>
+                                    </form>
+                                @endif
+                            @endauth
+                        </div>
+                    @empty
+                        <p>No hay reseñas todavía.</p>
+                    @endforelse
                 </div>
             </div>
         </div>

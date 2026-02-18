@@ -28,10 +28,13 @@
         public function ratings(){ return $this->hasMany('App\Models\Rating'); }
         public function reviews(){ return $this->hasMany('App\Models\Review'); }
 
-        public function updateAverageRating():bool{ //Devuelve un booleano para saber si el update es correcto o no
-            $average = $this->ratings()->avg('score') ?: 0.00;
-            return $this->update(['average_rating' => round($average, 2)]);
+        public function updateAverageRating()
+        {
+            $average = $this->ratings()->avg('score') ?: 0; // Si es null, que sea 0
 
+            $this->update([
+                'average_rating' => round($average, 1) // round es más seguro que number_format para operaciones matemáticas
+            ]);
         }
 
 
